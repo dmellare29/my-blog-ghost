@@ -1,8 +1,18 @@
-# see versions at https://hub.docker.com/_/ghost
-FROM ghost:5.14.1
+FROM node:18-alpine
 
-WORKDIR $GHOST_INSTALL
+WORKDIR /var/www/ghost
+
+# Copia el package.json y package-lock.json para instalar dependencias
+COPY package.json .
+COPY package-lock.json .
+
+RUN npm install --production
+
+# Copia el resto de los archivos de Ghost
 COPY . .
 
-ENTRYPOINT []
-CMD ["./start.sh"]
+# Expone el puerto 2368 (puerto por defecto de Ghost)
+EXPOSE 2368
+
+# Comando para iniciar Ghost
+CMD ["npm", "start"]
